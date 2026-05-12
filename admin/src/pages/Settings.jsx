@@ -8,6 +8,7 @@ export default function Settings() {
   const [settings, setSettings] = useState({
     bar_name: '', slide_duration: '8',
     happy_hour_start: '16:00', happy_hour_end: '18:00',
+    happy_hour_title: "IT'S HAPPY HOUR!",
     transition_effect: 'fade'
   });
   const { toast, showToast } = useToast();
@@ -32,6 +33,7 @@ export default function Settings() {
     { key: 'slide_duration',    label: 'Default slide duration (s)', type: 'number' },
     { key: 'happy_hour_start',  label: 'Happy hour start',           type: 'time' },
     { key: 'happy_hour_end',    label: 'Happy hour end',             type: 'time' },
+    { key: 'happy_hour_title',  label: 'Happy hour banner title',    type: 'text' },
   ];
 
   return (

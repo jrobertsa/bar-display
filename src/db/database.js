@@ -63,5 +63,6 @@ insertSetting.run('transition_effect', 'fade');
 insertSetting.run('happy_hour_start', '16:00');
 insertSetting.run('happy_hour_end', '18:00');
 insertSetting.run('bar_name', 'My Bar');
+insertSetting.run('happy_hour_title', "IT'S HAPPY HOUR!");
 
 module.exports = db;

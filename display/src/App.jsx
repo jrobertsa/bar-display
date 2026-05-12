@@ -110,6 +110,13 @@ export default function App() {
     };
   }, [currentIndex, slides, settings.slide_duration]);
 
+  const to12h = (time) => {
+    const [h, m] = time.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour = h % 12 || 12;
+    return `${hour}:${String(m).padStart(2, '0')} ${period}`;
+  };
+
   // Happy hour check
   const isHappyHour = () => {
     if (!settings.happy_hour_start || !settings.happy_hour_end) return false;
@@ -166,7 +173,7 @@ export default function App() {
     <>
       {isHappyHour() && (
         <div className="happy-hour-banner">
-          HAPPY HOUR — {settings.happy_hour_start} to {settings.happy_hour_end}
+          {settings.happy_hour_title || "IT'S HAPPY HOUR!"} — {to12h(settings.happy_hour_start)} to {to12h(settings.happy_hour_end)}
         </div>
       )}
 
