@@ -1,0 +1,10 @@
+node_modules/
+display/node_modules/
+admin/node_modules/
+display/dist/
+admin/dist/
+src/uploads/
+src/db/bar.db
+.env
+admin/.env
+display/.env

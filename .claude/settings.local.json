@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(timeout 5 node --experimental-sqlite src/server.js)",
+      "Bash(npm run:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jrobe\\\\Desktop\\\\Code\\\\bar-display\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\jrobe\\\\Desktop\\\\Code\\\\bar-display\" -Force | Where-Object { $_.PSIsContainer } | Select-Object -ExpandProperty Name | Sort-Object)"
+    ]
+  }
+}
