@@ -4,6 +4,9 @@ const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const fs = require('fs');
+
+fs.mkdirSync(path.join(__dirname, 'uploads'), { recursive: true });
 
 // Initialize DB (runs schema creation on first launch)
 require('./db/database');
