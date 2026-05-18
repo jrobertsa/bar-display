@@ -67,5 +67,7 @@ insertSetting.run('happy_hour_title', "IT'S HAPPY HOUR!");
 insertSetting.run('food_slide_duration', '12');
 insertSetting.run('drink_slide_duration', '12');
 insertSetting.run('weather_zip', '');
+insertSetting.run('show_clock', 'true');
+insertSetting.run('show_weather', 'true');
 
 module.exports = db;

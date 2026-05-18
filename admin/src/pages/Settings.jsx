@@ -11,7 +11,7 @@ export default function Settings() {
     happy_hour_title: "IT'S HAPPY HOUR!",
     transition_effect: 'fade',
     food_slide_duration: '12', drink_slide_duration: '12',
-    weather_zip: '',
+    weather_zip: '', show_clock: 'true', show_weather: 'true',
   });
   const { toast, showToast } = useToast();
 
@@ -30,15 +30,23 @@ export default function Settings() {
     }
   };
 
+  const toggle = async (key) => {
+    const next = settings[key] === 'true' ? 'false' : 'true';
+    setSettings(s => ({ ...s, [key]: next }));
+    await save(key, next);
+  };
+
   const fields = [
-    { key: 'bar_name',             label: 'Bar name',                   type: 'text' },
-    { key: 'slide_duration',       label: 'Default slide duration (s)',  type: 'number' },
+    { key: 'bar_name',             label: 'Bar name',                    type: 'text' },
+    { key: 'slide_duration',       label: 'Default slide duration (s)',   type: 'number' },
     { key: 'food_slide_duration',  label: 'Food menu slide duration (s)', type: 'number' },
     { key: 'drink_slide_duration', label: 'Drink menu slide duration (s)', type: 'number' },
-    { key: 'weather_zip',          label: 'Weather zip code',            type: 'text' },
-    { key: 'happy_hour_start',     label: 'Happy hour start',            type: 'time' },
-    { key: 'happy_hour_end',       label: 'Happy hour end',              type: 'time' },
-    { key: 'happy_hour_title',     label: 'Happy hour banner title',     type: 'text' },
+    { key: 'show_clock',           label: 'Show clock',                   type: 'toggle' },
+    { key: 'weather_zip',          label: 'Weather zip code',             type: 'text' },
+    { key: 'show_weather',         label: 'Show weather',                 type: 'toggle' },
+    { key: 'happy_hour_start',     label: 'Happy hour start',             type: 'time' },
+    { key: 'happy_hour_end',       label: 'Happy hour end',               type: 'time' },
+    { key: 'happy_hour_title',     label: 'Happy hour banner title',      type: 'text' },
   ];
 
   return (
@@ -49,18 +57,29 @@ export default function Settings() {
         {fields.map(f => (
           <div className="form-group" key={f.key}>
             <label className="label">{f.label}</label>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input
-                className="input"
-                type={f.type}
-                value={settings[f.key] || ''}
-                onChange={e => setSettings(s => ({ ...s, [f.key]: e.target.value }))}
-              />
-              <button className="btn btn-success btn-sm"
-                onClick={() => save(f.key, settings[f.key])}>
-                Save
-              </button>
-            </div>
+            {f.type === 'toggle' ? (
+              <div>
+                <button
+                  className={`btn btn-sm ${settings[f.key] === 'true' ? 'btn-success' : ''}`}
+                  onClick={() => toggle(f.key)}
+                >
+                  {settings[f.key] === 'true' ? 'On' : 'Off'}
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input
+                  className="input"
+                  type={f.type}
+                  value={settings[f.key] || ''}
+                  onChange={e => setSettings(s => ({ ...s, [f.key]: e.target.value }))}
+                />
+                <button className="btn btn-success btn-sm"
+                  onClick={() => save(f.key, settings[f.key])}>
+                  Save
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>

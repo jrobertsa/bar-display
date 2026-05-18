@@ -198,8 +198,8 @@ export default function App() {
         {renderSlide()}
       </div>
 
-      <ClockWidget />
-      <WeatherWidget weather={weather} />
+      {settings.show_clock !== 'false' && <ClockWidget />}
+      {settings.show_weather !== 'false' && <WeatherWidget weather={weather} />}
 
       <div
         className="progress-bar"
