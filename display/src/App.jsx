@@ -5,7 +5,7 @@ import MenuSlide from './components/MenuSlide';
 import AnnouncementSlide from './components/AnnouncementSlide';
 import ClockWidget from './components/ClockWidget';
 
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || '';
 
 export default function App() {
   const [slides, setSlides]           = useState([]);
