@@ -44,7 +44,7 @@ export default function MenuSlide({ title, items, type = 'food', accentColor = '
                     {item.image_path ? (
                       <img
                         className="menu-item-image"
-                        src={`${import.meta.env.VITE_API_URL}${item.image_path}`}
+                        src={`${import.meta.env.VITE_API_URL || ''}${item.image_path}`}
                         alt={item.name}
                       />
                     ) : (
