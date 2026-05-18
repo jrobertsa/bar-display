@@ -5,6 +5,7 @@ import MenuSlide from './components/MenuSlide';
 import AnnouncementSlide from './components/AnnouncementSlide';
 import ClockWidget from './components/ClockWidget';
 import WeatherWidget from './components/WeatherWidget';
+import DrawingSlide from './components/DrawingSlide';
 
 const API = import.meta.env.VITE_API_URL || '';
 
@@ -30,6 +31,7 @@ export default function App() {
       else if (slide.type === 'drinks')  queue.push({ kind: 'drinks', slide });
       else if (slide.type === 'photo')   queue.push({ kind: 'photo', slide });
       else if (slide.type === 'announcement') queue.push({ kind: 'announcement', slide });
+      else if (slide.type === 'drawing')     queue.push({ kind: 'drawing', slide });
     });
 
     // If no explicit food/drink slides configured, auto-generate from menu data
@@ -179,6 +181,11 @@ export default function App() {
       case 'announcement':
         return <div className={cls} style={{ position: 'absolute', inset: 0 }}>
           <AnnouncementSlide slide={entry.slide} />
+        </div>;
+
+      case 'drawing':
+        return <div className={cls} style={{ position: 'absolute', inset: 0 }}>
+          <DrawingSlide slide={entry.slide} />
         </div>;
 
       default:

@@ -30,8 +30,14 @@ app.use('/api/auth',   require('./routes/auth'));
 app.use('/api/food',   require('./routes/food'));
 app.use('/api/drinks', require('./routes/drinks'));
 app.use('/api/slides', require('./routes/slides'));
-app.use('/api/settings', require('./routes/settings'));
-app.use('/api/weather',  require('./routes/weather'));
+app.use('/api/settings',  require('./routes/settings'));
+app.use('/api/weather',   require('./routes/weather'));
+app.use('/api/drawings',  require('./routes/drawings'));
+
+app.use('/register', express.static(path.join(__dirname, 'public')));
+app.get('/register/:code', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/register.html'));
+});
 
 // Socket.io connection
 io.on('connection', (socket) => {

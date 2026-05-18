@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drawing Registration</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #18181b;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 28px;
+      color: #f0c040;
+      letter-spacing: 1px;
+    }
+
+    .card {
+      background: #27272a;
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .drawing-name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .drawing-meta {
+      font-size: 14px;
+      color: #a1a1aa;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .drawing-meta span {
+      color: #f0c040;
+      font-weight: 600;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #a1a1aa;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group { margin-bottom: 18px; }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      background: #3f3f46;
+      border: 1px solid #52525b;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus { border-color: #f0c040; }
+    input::placeholder { color: #71717a; }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: #f0c040;
+      color: #18181b;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 8px;
+    }
+
+    .btn:hover { background: #f5d060; }
+    .btn:disabled { background: #52525b; color: #a1a1aa; cursor: not-allowed; }
+
+    .error {
+      background: #450a0a;
+      border: 1px solid #b91c1c;
+      color: #fca5a5;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .success-card {
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .success-icon { font-size: 56px; margin-bottom: 16px; }
+
+    .success-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #f0c040;
+      margin-bottom: 8px;
+    }
+
+    .success-sub {
+      font-size: 15px;
+      color: #a1a1aa;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .payment-notice {
+      background: #1c1917;
+      border: 1px solid #f0c040;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: #fef9c3;
+      line-height: 1.5;
+    }
+
+    .loading {
+      text-align: center;
+      color: #71717a;
+      padding: 40px 0;
+      font-size: 15px;
+    }
+
+    .closed-card {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .closed-icon { font-size: 48px; margin-bottom: 16px; }
+    .closed-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .closed-sub { font-size: 14px; color: #a1a1aa; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🎰 Bar Drawing</div>
+    <div class="card">
+      <div id="app"><div class="loading">Loading drawing details…</div></div>
+    </div>
+  </div>
+
+  <script>
+    const code = location.pathname.split('/').filter(Boolean).pop();
+
+    async function init() {
+      try {
+        const res = await fetch(`/api/drawings/register/${code}`);
+        if (!res.ok) {
+          const err = await res.json();
+          showClosed(err.error || 'This drawing is not available.');
+          return;
+        }
+        const drawing = await res.json();
+        showForm(drawing);
+      } catch {
+        showClosed('Could not load drawing details. Please try again.');
+      }
+    }
+
+    function showClosed(msg) {
+      document.getElementById('app').innerHTML = `
+        <div class="closed-card">
+          <div class="closed-icon">🔒</div>
+          <div class="closed-title">Drawing Unavailable</div>
+          <div class="closed-sub">${msg}</div>
+        </div>`;
+    }
+
+    function showForm(drawing) {
+      const drawDate = drawing.draw_date
+        ? new Date(drawing.draw_date).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+        : 'TBD';
+
+      document.getElementById('app').innerHTML = `
+        <div class="drawing-name">${drawing.name}</div>
+        <div class="drawing-meta">
+          ${drawing.type.charAt(0).toUpperCase() + drawing.type.slice(1)} Drawing &nbsp;·&nbsp;
+          Entry fee: <span>$${Number(drawing.entry_fee).toFixed(2)}</span><br/>
+          Draw date: <span>${drawDate}</span>
+        </div>
+        <div id="error-msg"></div>
+        <div class="form-group">
+          <label class="label">Your Name</label>
+          <input id="inp-name" type="text" placeholder="First and last name" autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label class="label">Phone Number</label>
+          <input id="inp-phone" type="tel" placeholder="(555) 555-5555" autocomplete="tel" />
+        </div>
+        <button class="btn" id="btn-submit" onclick="handleSubmit('${code}', ${drawing.entry_fee})">
+          Enter Drawing
+        </button>`;
+    }
+
+    async function handleSubmit(code, entryFee) {
+      const name = document.getElementById('inp-name').value.trim();
+      const phone = document.getElementById('inp-phone').value.trim();
+      const btn = document.getElementById('btn-submit');
+      const errEl = document.getElementById('error-msg');
+
+      errEl.innerHTML = '';
+
+      if (!name || !phone) {
+        errEl.innerHTML = '<div class="error">Please fill in both fields.</div>';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Entering…';
+
+      try {
+        const res = await fetch(`/api/drawings/register/${code}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          errEl.innerHTML = `<div class="error">${data.error}</div>`;
+          btn.disabled = false;
+          btn.textContent = 'Enter Drawing';
+          return;
+        }
+
+        showSuccess(data.drawing, name, entryFee, data.ticketNumber);
+      } catch {
+        errEl.innerHTML = '<div class="error">Something went wrong. Please try again.</div>';
+        btn.disabled = false;
+        btn.textContent = 'Enter Drawing';
+      }
+    }
+
+    function showSuccess(drawing, name, entryFee, ticketNumber) {
+      const drawDate = drawing && drawing.draw_date
+        ? new Date(drawing.draw_date).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+        : 'TBD';
+
+      document.getElementById('app').innerHTML = `
+        <div class="success-card">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">You're entered! Good luck!</div>
+          ${ticketNumber ? `<div style="font-size:36px;font-weight:700;color:#f0c040;letter-spacing:4px;margin:8px 0 4px">#${ticketNumber}</div>
+          <div style="font-size:13px;color:#71717a;margin-bottom:16px">Your ticket number</div>` : ''}
+          <div class="success-sub">
+            ${drawing ? drawing.name : ''}<br/>
+            Draw date: ${drawDate}
+          </div>
+          <div class="payment-notice">
+            💵 Payment of <strong>$${Number(entryFee).toFixed(2)}</strong> is due in cash to staff.
+          </div>
+        </div>`;
+    }
+
+    init();
+  </script>
+</body>
+</html>

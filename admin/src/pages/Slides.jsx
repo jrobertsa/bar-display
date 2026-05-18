@@ -4,7 +4,9 @@ import { Toast, useToast } from '../components/Toast';
 
 const API = import.meta.env.VITE_API_URL || '';
 
-const DEFAULT_FORM = { title: '', duration: '', sort_order: '' };
+const DEFAULT_FORM = { type: 'photo', title: '', duration: '', sort_order: '' };
+const PHOTO_TYPES = ['photo', 'announcement'];
+const NO_IMAGE_TYPES = ['drawing'];
 
 export default function Slides() {
   const [slides, setSlides]           = useState([]);
@@ -46,11 +48,12 @@ export default function Slides() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!imageFile) { showToast('Please select an image', 'error'); return; }
+    const needsImage = !NO_IMAGE_TYPES.includes(form.type);
+    if (needsImage && !imageFile) { showToast('Please select an image', 'error'); return; }
 
     const fd = new FormData();
-    fd.append('type', 'photo');
-    fd.append('image', imageFile);
+    fd.append('type', form.type);
+    if (imageFile) fd.append('image', imageFile);
     if (form.title)      fd.append('title',      form.title);
     if (form.duration)   fd.append('duration',   form.duration);
     if (form.sort_order) fd.append('sort_order', form.sort_order);
@@ -152,7 +155,27 @@ export default function Slides() {
           Upload new slide
         </div>
         <form onSubmit={handleUpload}>
-          <div
+          <div className="form-group">
+            <label className="label">Slide Type</label>
+            <select
+              className="input"
+              style={{ width: 200 }}
+              value={form.type}
+              onChange={e => {
+                setForm(f => ({ ...f, type: e.target.value }));
+                if (NO_IMAGE_TYPES.includes(e.target.value)) {
+                  setImageFile(null);
+                  setImagePreview(null);
+                }
+              }}
+            >
+              <option value="photo">Photo</option>
+              <option value="announcement">Announcement</option>
+              <option value="drawing">Drawing</option>
+            </select>
+          </div>
+
+          {!NO_IMAGE_TYPES.includes(form.type) && <div
             className={`upload-zone${dragOver ? ' drag-over' : ''}`}
             style={{ marginBottom: 16, position: 'relative' }}
             onClick={() => fileInputRef.current?.click()}
@@ -190,7 +213,7 @@ export default function Slides() {
               style={{ display: 'none' }}
               onChange={handleFileInput}
             />
-          </div>
+          </div>}
 
           <div className="grid-2" style={{ marginBottom: 12 }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
@@ -272,7 +295,10 @@ export default function Slides() {
                     </span>
                   </td>
                   <td>
-                    <span className={`badge ${slide.type === 'photo' ? 'badge-yellow' : 'badge-gray'}`}>
+                    <span className={`badge ${
+                      slide.type === 'photo' ? 'badge-yellow' :
+                      slide.type === 'drawing' ? 'badge-green' : 'badge-gray'
+                    }`}>
                       {slide.type}
                     </span>
                   </td>

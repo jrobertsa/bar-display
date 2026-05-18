@@ -6,32 +6,47 @@ import MenuPage from './pages/MenuPage';
 import Settings from './pages/Settings';
 import Slides from './pages/Slides';
 import Users from './pages/Users';
+import DrawingManager from './pages/DrawingManager';
+import DrawingEntries from './pages/DrawingEntries';
+import DrawingHistory from './pages/DrawingHistory';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: '📊' },
   { id: 'food',      label: 'Food menu', icon: '🍔' },
   { id: 'drinks',    label: 'Drink menu', icon: '🍺' },
   { id: 'slides',    label: 'Slides',    icon: '🖼️' },
+  { id: 'drawings',  label: 'Drawings',  icon: '🎰' },
   { id: 'settings',  label: 'Settings',  icon: '⚙️' },
   { id: 'users',     label: 'Users',     icon: '👤' },
 ];
 
 function AdminApp() {
   const { token, logout } = useAuth();
-  const [page, setPage]   = useState('dashboard');
+  const [page, setPage]         = useState('dashboard');
+  const [drawingId, setDrawingId] = useState(null);
 
   if (!token) return <Login />;
 
+  const navigate = (p, id = null) => {
+    setPage(p);
+    if (id !== null) setDrawingId(id);
+  };
+
   const renderPage = () => {
     switch (page) {
-      case 'food':      return <MenuPage type="food" />;
-      case 'drinks':    return <MenuPage type="drinks" />;
-      case 'slides':    return <Slides />;
-      case 'settings':  return <Settings />;
-      case 'users':     return <Users />;
-      default:          return <Dashboard />;
+      case 'food':             return <MenuPage type="food" />;
+      case 'drinks':           return <MenuPage type="drinks" />;
+      case 'slides':           return <Slides />;
+      case 'settings':         return <Settings />;
+      case 'users':            return <Users />;
+      case 'drawings':         return <DrawingManager navigate={navigate} />;
+      case 'drawing-entries':  return <DrawingEntries id={drawingId} navigate={navigate} />;
+      case 'drawing-history':  return <DrawingHistory id={drawingId} navigate={navigate} />;
+      default:                 return <Dashboard />;
     }
   };
+
+  const isDrawingsActive = page === 'drawings' || page.startsWith('drawing-');
 
   return (
     <div className="layout">
@@ -40,7 +55,7 @@ function AdminApp() {
         {navItems.map(n => (
           <button
             key={n.id}
-            className={`nav-item ${page === n.id ? 'active' : ''}`}
+            className={`nav-item ${n.id === 'drawings' ? (isDrawingsActive ? 'active' : '') : page === n.id ? 'active' : ''}`}
             onClick={() => setPage(n.id)}
           >
             <span className="nav-icon">{n.icon}</span>
