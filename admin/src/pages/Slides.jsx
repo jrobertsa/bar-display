@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Toast, useToast } from '../components/Toast';
 
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || '';
 
 const DEFAULT_FORM = { title: '', duration: '', sort_order: '' };
 

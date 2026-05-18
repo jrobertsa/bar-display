@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || '';
 
 export default function ItemModal({ item, endpoint, onClose, onSaved }) {
   const [form, setForm] = useState({

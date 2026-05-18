@@ -3,7 +3,7 @@ import axios from 'axios';
 import ItemModal from '../components/ItemModal';
 import { Toast, useToast } from '../components/Toast';
 
-const API = import.meta.env.VITE_API_URL;
+const API = import.meta.env.VITE_API_URL || '';
 
 export default function MenuPage({ type }) {
   const endpoint  = type === 'food' ? 'food' : 'drinks';
