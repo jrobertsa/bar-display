@@ -9,7 +9,9 @@ export default function Settings() {
     bar_name: '', slide_duration: '8',
     happy_hour_start: '16:00', happy_hour_end: '18:00',
     happy_hour_title: "IT'S HAPPY HOUR!",
-    transition_effect: 'fade'
+    transition_effect: 'fade',
+    food_slide_duration: '12', drink_slide_duration: '12',
+    weather_zip: '',
   });
   const { toast, showToast } = useToast();
 
@@ -29,11 +31,14 @@ export default function Settings() {
   };
 
   const fields = [
-    { key: 'bar_name',          label: 'Bar name',                  type: 'text' },
-    { key: 'slide_duration',    label: 'Default slide duration (s)', type: 'number' },
-    { key: 'happy_hour_start',  label: 'Happy hour start',           type: 'time' },
-    { key: 'happy_hour_end',    label: 'Happy hour end',             type: 'time' },
-    { key: 'happy_hour_title',  label: 'Happy hour banner title',    type: 'text' },
+    { key: 'bar_name',             label: 'Bar name',                   type: 'text' },
+    { key: 'slide_duration',       label: 'Default slide duration (s)',  type: 'number' },
+    { key: 'food_slide_duration',  label: 'Food menu slide duration (s)', type: 'number' },
+    { key: 'drink_slide_duration', label: 'Drink menu slide duration (s)', type: 'number' },
+    { key: 'weather_zip',          label: 'Weather zip code',            type: 'text' },
+    { key: 'happy_hour_start',     label: 'Happy hour start',            type: 'time' },
+    { key: 'happy_hour_end',       label: 'Happy hour end',              type: 'time' },
+    { key: 'happy_hour_title',     label: 'Happy hour banner title',     type: 'text' },
   ];
 
   return (

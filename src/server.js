@@ -31,6 +31,7 @@ app.use('/api/food',   require('./routes/food'));
 app.use('/api/drinks', require('./routes/drinks'));
 app.use('/api/slides', require('./routes/slides'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/weather',  require('./routes/weather'));
 
 // Socket.io connection
 io.on('connection', (socket) => {

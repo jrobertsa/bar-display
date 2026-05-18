@@ -64,5 +64,8 @@ insertSetting.run('happy_hour_start', '16:00');
 insertSetting.run('happy_hour_end', '18:00');
 insertSetting.run('bar_name', 'My Bar');
 insertSetting.run('happy_hour_title', "IT'S HAPPY HOUR!");
+insertSetting.run('food_slide_duration', '12');
+insertSetting.run('drink_slide_duration', '12');
+insertSetting.run('weather_zip', '');
 
 module.exports = db;

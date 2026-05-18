@@ -4,6 +4,7 @@ import PhotoSlide from './components/PhotoSlide';
 import MenuSlide from './components/MenuSlide';
 import AnnouncementSlide from './components/AnnouncementSlide';
 import ClockWidget from './components/ClockWidget';
+import WeatherWidget from './components/WeatherWidget';
 
 const API = import.meta.env.VITE_API_URL || '';
 
@@ -15,13 +16,14 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [active, setActive]           = useState(true);
   const [progress, setProgress]       = useState(0);
+  const [weather, setWeather]         = useState({ enabled: false });
 
   const timerRef    = useRef(null);
   const progressRef = useRef(null);
   const startRef    = useRef(null);
 
   // Build the full slide queue from API data
-  const buildQueue = useCallback((rawSlides, food, drinks) => {
+  const buildQueue = useCallback((rawSlides, food, drinks, cfg = {}) => {
     const queue = [];
     rawSlides.forEach(slide => {
       if (slide.type === 'food')         queue.push({ kind: 'food', slide });
@@ -32,14 +34,29 @@ export default function App() {
 
     // If no explicit food/drink slides configured, auto-generate from menu data
     if (!rawSlides.find(s => s.type === 'food') && food.length > 0) {
-      queue.push({ kind: 'food', slide: { id: 'auto-food', duration: 12 } });
+      queue.push({ kind: 'food', slide: { id: 'auto-food', duration: parseInt(cfg.food_slide_duration) || 12 } });
     }
     if (!rawSlides.find(s => s.type === 'drinks') && drinks.length > 0) {
-      queue.push({ kind: 'drinks', slide: { id: 'auto-drinks', duration: 12 } });
+      queue.push({ kind: 'drinks', slide: { id: 'auto-drinks', duration: parseInt(cfg.drink_slide_duration) || 12 } });
     }
 
     return queue;
   }, []);
+
+  const fetchWeather = useCallback(async () => {
+    try {
+      const res = await fetch(`${API}/api/weather`);
+      setWeather(await res.json());
+    } catch {
+      // widget stays hidden on error
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchWeather();
+    const interval = setInterval(fetchWeather, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [fetchWeather]);
 
   // Fetch all data
   const fetchAll = useCallback(async () => {
@@ -56,7 +73,7 @@ export default function App() {
         drinksRes.json(),
         settingsRes.json()
       ]);
-      setSlides(buildQueue(rawSlides, food, drinks));
+      setSlides(buildQueue(rawSlides, food, drinks, cfg));
       setFoodItems(food);
       setDrinkItems(drinks);
       setSettings(cfg);
@@ -71,9 +88,9 @@ export default function App() {
     const socket = io(API);
     socket.on('menu_updated',   fetchAll);
     socket.on('slides_updated', fetchAll);
-    socket.on('settings_updated', fetchAll);
+    socket.on('settings_updated', () => { fetchAll(); fetchWeather(); });
     return () => socket.disconnect();
-  }, [fetchAll]);
+  }, [fetchAll, fetchWeather]);
 
   // Initial load
   useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -182,6 +199,7 @@ export default function App() {
       </div>
 
       <ClockWidget />
+      <WeatherWidget weather={weather} />
 
       <div
         className="progress-bar"
